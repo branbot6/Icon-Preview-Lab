@@ -16,10 +16,10 @@ swift run IconPreviewLabNative
 - Load SVG via native file picker or drag-and-drop
 - Preview icon appearance in multiple contexts
 - Favicon context
-   - Web tab + logo context
-   - macOS app icon scenes
-   - iOS app icon scenes
-   - Export 1024x1024 PNG (native save dialog)
+- Web tab + logo context
+- macOS app icon scenes
+- iOS app icon scenes
+- Export 1024x1024 PNG (native save dialog)
 - Export macOS DMG from the current icon
 
 ## Typical Workflow
@@ -97,4 +97,10 @@ Icon-preview/
 
 ## License
 
-License file is not added yet. Add a `LICENSE` file (for example MIT) before broader external contributions.
+This project is licensed under the MIT License.
+
+- You can use, modify, and distribute this project (including commercial use).
+- Keep the original copyright notice and license text.
+- The software is provided "as is", without warranty.
+
+See [LICENSE](./LICENSE) for full text.
