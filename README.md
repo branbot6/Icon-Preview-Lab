@@ -67,6 +67,17 @@ Run app in dev mode:
 xattr -dr com.apple.quarantine "/Applications/Icon Preview Lab.app"
 ```
 
+## Daily Contribution (Real)
+
+If you want steady daily contributions with real value:
+
+```bash
+./scripts/daily_contribution.sh
+```
+
+- Workflow details: `docs/DAILY_CONTRIBUTION.md`
+- Daily logs path: `logs/daily/`
+
 ## Contributing
 
 Issues and PRs are welcome.
@@ -96,10 +107,15 @@ Icon-preview/
 │  └─ IconPreviewLabNative/
 │     ├─ main.swift
 │     └─ Resources/
+├─ docs/
+│  └─ DAILY_CONTRIBUTION.md
+├─ logs/
+│  └─ daily/
 └─ scripts/
    ├─ run.sh
    ├─ build_app.sh
-   └─ sign_and_notarize.sh
+   ├─ sign_and_notarize.sh
+   └─ daily_contribution.sh
 ```
 
 ## License
