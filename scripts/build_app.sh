@@ -35,17 +35,17 @@ fi
 rm -rf "$APP_DIR" "$STAGE_DIR" "$DMG_PATH"
 mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources" "$STAGE_DIR"
 
-cp "$BIN_PATH" "$APP_DIR/Contents/MacOS/$EXEC_NAME"
+ditto --noextattr --norsrc "$BIN_PATH" "$APP_DIR/Contents/MacOS/$EXEC_NAME"
 chmod +x "$APP_DIR/Contents/MacOS/$EXEC_NAME"
 
-cp "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/index.html" "$APP_DIR/Contents/Resources/index.html"
-cp "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/branai-logo.svg" "$APP_DIR/Contents/Resources/branai-logo.svg"
-cp "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/branai-icon.svg" "$APP_DIR/Contents/Resources/branai-icon.svg"
-cp "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/ip-icon-1024.png" "$APP_DIR/Contents/Resources/ip-icon-1024.png"
+ditto --noextattr --norsrc "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/index.html" "$APP_DIR/Contents/Resources/index.html"
+ditto --noextattr --norsrc "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/branai-logo.svg" "$APP_DIR/Contents/Resources/branai-logo.svg"
+ditto --noextattr --norsrc "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/branai-icon.svg" "$APP_DIR/Contents/Resources/branai-icon.svg"
+ditto --noextattr --norsrc "$NATIVE_DIR/Sources/IconPreviewLabNative/Resources/ip-icon-1024.png" "$APP_DIR/Contents/Resources/ip-icon-1024.png"
 
 ICON_FILE_KEY=""
 if [[ -f "$ICON_SOURCE" ]]; then
-  cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/icon.icns"
+  ditto --noextattr --norsrc "$ICON_SOURCE" "$APP_DIR/Contents/Resources/icon.icns"
   ICON_FILE_KEY='<key>CFBundleIconFile</key><string>icon.icns</string>'
 fi
 
@@ -70,10 +70,23 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-cp -R "$APP_DIR" "$STAGE_DIR/"
-ln -s /Applications "$STAGE_DIR/Applications"
-
+# Strip problematic Finder/FileProvider attrs before signing.
 xattr -cr "$APP_DIR" || true
+xattr -d com.apple.FinderInfo "$APP_DIR" || true
+xattr -d com.apple.fileprovider.fpfs#P "$APP_DIR" || true
+find "$APP_DIR" -exec xattr -d com.apple.FinderInfo {} + 2>/dev/null || true
+find "$APP_DIR" -exec xattr -d com.apple.fileprovider.fpfs#P {} + 2>/dev/null || true
+
+# Ensure the app bundle has a consistent signature envelope.
+codesign --force --deep --sign - "$APP_DIR"
+codesign --verify --deep --strict --verbose=2 "$APP_DIR"
+
+# Preserve app structure without carrying local metadata detritus.
+ditto --noextattr --norsrc "$APP_DIR" "$STAGE_DIR/$APP_NAME.app"
+xattr -d com.apple.FinderInfo "$STAGE_DIR/$APP_NAME.app" || true
+xattr -d com.apple.fileprovider.fpfs#P "$STAGE_DIR/$APP_NAME.app" || true
+codesign --verify --deep --strict --verbose=2 "$STAGE_DIR/$APP_NAME.app"
+ln -s /Applications "$STAGE_DIR/Applications"
 
 hdiutil create \
   -volname "$APP_NAME" \
@@ -81,6 +94,8 @@ hdiutil create \
   -ov \
   -format UDZO \
   "$DMG_PATH"
+
+hdiutil verify "$DMG_PATH"
 
 rm -rf "$STAGE_DIR"
 
