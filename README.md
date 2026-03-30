@@ -7,7 +7,7 @@ Most icon tools stop at static preview. BranAI Icon Preview Lab also exports an 
 ## Quick Start (From Source)
 
 ```bash
-git clone https://github.com/branbot6/Icon-preview.git
+git clone https://github.com/branbot6/Icon-Preview-Lab.git
 cd Icon-preview
 swift build
 swift run IconPreviewLabNative
