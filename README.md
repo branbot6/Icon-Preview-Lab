@@ -4,6 +4,25 @@ A lightweight open-source macOS tool to preview SVG icons in real UI contexts an
 
 Most icon tools stop at static preview. BranAI Icon Preview Lab also exports an installable macOS DMG from your current icon, so you can validate the icon in real install/use scenarios.
 
+## Minimal Download (Smallest)
+
+If you want the smallest usable download path:
+
+1. Prefer **Source code ZIP** from GitHub (no git history).
+2. Or use shallow clone:
+
+```bash
+git clone --depth=1 https://github.com/branbot6/Icon-preview.git
+cd Icon-preview
+swift run IconPreviewLabNative
+```
+
+To free disk space after use:
+
+```bash
+rm -rf .build
+```
+
 ## Quick Start (From Source)
 
 ```bash
@@ -17,10 +36,10 @@ swift run IconPreviewLabNative
 
 - Load SVG via native file picker or drag-and-drop
 - Preview icon appearance in multiple contexts
-   - Favicon context
-   - Web tab + logo context
-   - macOS app icon scenes
-   - iOS app icon scenes
+- Favicon context
+- Web tab + logo context
+- macOS app icon scenes
+- iOS app icon scenes
 - Export macOS DMG directly from the current icon (core differentiator)
 - Export 1024x1024 PNG (native save dialog)
 
