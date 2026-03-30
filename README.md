@@ -36,13 +36,6 @@ swift run IconPreviewLabNative
 - You do not only preview icons; you can package and test them in a real macOS install flow.
 - This closes the gap between "looks good in preview" and "looks right in actual app distribution".
 
-## Typical Workflow
-
-1. Open app
-2. Choose or drag an SVG
-3. Inspect icon in all preview panels
-4. Export PNG and/or DMG
-
 ## Local Packaging
 
 Build `.app` and `.dmg` locally:
