@@ -2,18 +2,6 @@
 
 A lightweight open-source macOS tool to preview SVG icons in real UI contexts and export ready-to-use assets.
 
-## Download
-
-- [Download DMG (Latest)](https://github.com/branbot6/Icon-preview/releases/latest/download/branai-icon-preview-lab-latest.dmg)
-- [SHA256](https://github.com/branbot6/Icon-preview/releases/latest/download/branai-icon-preview-lab-latest.dmg.sha256)
-- [All Releases](https://github.com/branbot6/Icon-preview/releases/latest)
-
-Verify download:
-
-```bash
-shasum -a 256 "branai-icon-preview-lab-latest.dmg"
-```
-
 ## Quick Start (From Source)
 
 ```bash
@@ -69,7 +57,7 @@ Run app in dev mode:
 - If needed, remove quarantine manually:
 
 ```bash
-xattr -dr com.apple.quarantine ~/Downloads/branai-icon-preview-lab-latest.dmg
+xattr -dr com.apple.quarantine "/Applications/Icon Preview Lab.app"
 ```
 
 ## Contributing
