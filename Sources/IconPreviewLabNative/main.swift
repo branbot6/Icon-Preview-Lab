@@ -346,7 +346,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
     try pngData.write(to: iconPng)
 
     try buildIcns(pngPath: iconPng, icnsPath: iconIcns, workDir: tempRoot)
-    let appBundle = try buildPreviewApp(stageDir: stageDir, appName: finalAppName, icnsPath: iconIcns)
+    let appBundle = try buildPreviewApp(stageDir: stageDir, workDir: tempRoot, appName: finalAppName, icnsPath: iconIcns)
 
     let applicationsAlias = stageDir.appendingPathComponent("Applications")
     if !FileManager.default.fileExists(atPath: applicationsAlias.path) {
@@ -415,7 +415,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
     )
   }
 
-  private func buildPreviewApp(stageDir: URL, appName: String, icnsPath: URL) throws -> URL {
+  private func buildPreviewApp(stageDir: URL, workDir: URL, appName: String, icnsPath: URL) throws -> URL {
     let appBundle = stageDir.appendingPathComponent("\(appName).app")
     let contents = appBundle.appendingPathComponent("Contents")
     let macos = contents.appendingPathComponent("MacOS")
@@ -484,7 +484,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
     let promoHTMLPath = resources.appendingPathComponent("branai-promo.html")
     try promoHtml.write(to: promoHTMLPath, atomically: true, encoding: .utf8)
 
-    let swiftSourcePath = stageDir.appendingPathComponent("\(execName)-promo.swift")
+    // Keep transient build sources outside stageDir so they are never packed into the DMG.
+    let swiftSourcePath = workDir.appendingPathComponent("\(execName)-promo.swift")
     let escapedTitle = escapeSwiftString(appName)
     let swiftSource = """
     import Cocoa
