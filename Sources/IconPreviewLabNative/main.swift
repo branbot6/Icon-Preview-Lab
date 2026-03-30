@@ -463,18 +463,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
       <style>
         :root { color-scheme: light; }
         html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f6f7fb; color: #111; }
-        .wrap { min-height: 100%; display: grid; place-items: center; padding: 24px; }
+        body { position: relative; }
+        .overlay-link { position: fixed; inset: 0; display: block; z-index: 1; }
+        .wrap { min-height: 100%; display: grid; place-items: center; padding: 24px; position: relative; z-index: 2; pointer-events: none; }
         .card { width: min(720px, 100%); background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 28px; text-align: center; box-shadow: 0 16px 34px rgba(17,24,39,0.1); }
         .logo { width: min(440px, 92%); height: auto; display: block; margin: 0 auto 18px; }
         .link { font-size: 22px; line-height: 1.25; font-weight: 600; letter-spacing: 0.01em; color: #111; text-decoration: none; }
-        .link:hover { text-decoration: underline; }
       </style>
     </head>
     <body>
+      <a class="overlay-link" href="https://www.branai.org" aria-label="Open BranAI in browser"></a>
       <main class="wrap">
         <section class="card">
           <img class="logo" src="./branai-logo.svg" alt="BranAI logo" />
-          <a class="link" href="https://www.branai.org">www.branai.org</a>
+          <span class="link">www.branai.org</span>
         </section>
       </main>
     </body>
@@ -491,8 +493,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
     import Cocoa
     import WebKit
 
+    final class ExternalLinkDelegate: NSObject, WKNavigationDelegate {
+      func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url else {
+          decisionHandler(.allow)
+          return
+        }
+
+        if navigationAction.navigationType == .linkActivated,
+           let scheme = url.scheme?.lowercased(),
+           scheme == "http" || scheme == "https" {
+          NSWorkspace.shared.open(url)
+          decisionHandler(.cancel)
+          return
+        }
+
+        decisionHandler(.allow)
+      }
+    }
+
     final class AppDelegate: NSObject, NSApplicationDelegate {
       private var window: NSWindow!
+      private let linkDelegate = ExternalLinkDelegate()
 
       func applicationDidFinishLaunching(_ notification: Notification) {
         let frame = NSRect(x: 0, y: 0, width: 920, height: 620)
@@ -508,6 +530,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
 
         let webView = WKWebView(frame: window.contentView?.bounds ?? .zero)
         webView.autoresizingMask = [.width, .height]
+        webView.navigationDelegate = linkDelegate
         window.contentView?.addSubview(webView)
 
         if let resourcePath = Bundle.main.resourcePath {
