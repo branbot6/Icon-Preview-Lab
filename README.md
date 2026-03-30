@@ -15,12 +15,19 @@ swift run IconPreviewLabNative
 
 ## What It Does
 
+### Import
+
 - Load SVG via native file picker or drag-and-drop
-- Preview icon appearance in multiple contexts
+
+### Preview
+
 - Favicon context
 - Web tab + logo context
 - macOS app icon scenes
 - iOS app icon scenes
+
+### Export
+
 - Export macOS DMG directly from the current icon (core differentiator)
 - Export 1024x1024 PNG (native save dialog)
 
